@@ -1,4 +1,5 @@
 # MyStr
+开源协议在这里(不过反正也没人看):
  GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
