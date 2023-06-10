@@ -6,6 +6,7 @@
 #define ERROR_NO_STR 12
 #define SUCCESS 100
 #define _CRT_SECURE_NO_WARNINGS
+#define FAIL 0
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -27,24 +28,24 @@ void AddNode(struct node** PtrToHead, char InputData)
 	PtrToNewNode->data = InputData;
 	if ((*PtrToHead) == NULL)
 	{
-		//Èç¹ûÁ´±íÎª¿Õ
-		(*PtrToHead) = PtrToNewNode;//²åÈë½Úµã
+		//å¦‚æœé“¾è¡¨ä¸ºç©º
+		(*PtrToHead) = PtrToNewNode;//æ’å…¥èŠ‚ç‚¹
 		(PtrToNewNode->PtrToNextNode) = NULL;
-		//fprintf(stdout, "½ÚµãÌí¼Ó³É¹¦\n");
+		//fprintf(stdout, "èŠ‚ç‚¹æ·»åŠ æˆåŠŸ\n");
 	}
 	else
 	{
-		//Èç¹ûÁ´±í²»Îª¿Õ
+		//å¦‚æœé“¾è¡¨ä¸ä¸ºç©º
 		struct node* PtrToEnd = NULL;
 		PtrToEnd = (*PtrToHead);
-		//ÒÆ¶¯µ½Á´±íµÄÎ²²¿
+		//ç§»åŠ¨åˆ°é“¾è¡¨çš„å°¾éƒ¨
 		while (PtrToEnd->PtrToNextNode != NULL)
 		{
 			PtrToEnd = (PtrToEnd->PtrToNextNode);
 		}
 		PtrToEnd->PtrToNextNode = PtrToNewNode;
 		PtrToNewNode->PtrToNextNode = NULL;
-		//fprintf(stdout, "½ÚµãÌí¼Ó³É¹¦(Á´±í²»Îª¿Õ)\n");
+		//fprintf(stdout, "èŠ‚ç‚¹æ·»åŠ æˆåŠŸ(é“¾è¡¨ä¸ä¸ºç©º)\n");
 	}
 }
 
@@ -58,6 +59,7 @@ void PrintfAllNodes(struct node* Head)
 	}
 }
 
+
 void DeleteAllNodes(struct node** PtrToHead)
 {
 	struct node* PtrANode = *PtrToHead;
@@ -67,7 +69,7 @@ void DeleteAllNodes(struct node** PtrToHead)
 		PtrANode = PtrANode->PtrToNextNode;
 		free(TempPtrANode);
 	}
-	*PtrToHead = NULL; // ½«Í·½ÚµãÖÃÎª NULL
+	*PtrToHead = NULL; // å°†å¤´èŠ‚ç‚¹ç½®ä¸º NULL
 }
 
 size_t NodeNumber(struct node* Head)
@@ -90,17 +92,16 @@ void TransferStr(char* str, struct node* Head)
 	while (TempPtrANode != NULL)
 	{
 		str[i] = TempPtrANode->data;
-		//ÒÆ¶¯½ÚµãºÍÏÂ±ê
+		//ç§»åŠ¨èŠ‚ç‚¹å’Œä¸‹æ ‡
 		i++;
 		TempPtrANode = TempPtrANode->PtrToNextNode;
 	}
 	str[i] = '\0';
 }
 
-
-char* FileMoveStr(FILE* _Stream, int EndInput, int DecideEnd)
+//æ³¨æ„:è¿™ä¸ªå‡½æ•°ä½¿ç”¨æ—¶ä¸ä¼šæŠŠæ–‡ä»¶æŒ‡ç¤ºå™¨ç§»åŠ¨åˆ°åŸæ¥çš„ä½ç½®
+char* FileMoveStr(file* _Stream, int EndInput, int DecideEnd)
 {
-	//×¢Òâ:Õâ¸öº¯ÊıÊ¹ÓÃÊ±²»»á°ÑÎÄ¼şÖ¸Ê¾Æ÷ÒÆ¶¯µ½Ô­À´µÄÎ»ÖÃ
 	char ch = 0;
 	while (1)
 	{
@@ -112,22 +113,22 @@ char* FileMoveStr(FILE* _Stream, int EndInput, int DecideEnd)
 		{
 			if (DecideEnd == IncludeTheEnd)
 			{
-				//°ÑinputÒ²³Ô½øÈ¥
+				//æŠŠinputä¹Ÿåƒè¿›å»
 				AddNode(&head, ch);
 			}
 			else if (DecideEnd == NIncludeTheEnd)
 			{
-				//²»°Ñ½áÎ²(Ò²¾ÍÊÇinput)³Ô½øÈ¥
+				//ä¸æŠŠç»“å°¾(ä¹Ÿå°±æ˜¯input)åƒè¿›å»
 				NULL;
 			}
 			else
 			{
 				//error
-				fprintf(stdout, "²ÎÊı´«µİ´íÎó\n");
+				fprintf(stdout, "å‚æ•°ä¼ é€’é”™è¯¯\n");
 			}
 			break;
 		}
-		//Èç¹û¶Áµ½ÎÄ¼ş½áÎ²ÒÀÈ»Ã»ÓĞÕÒµ½ÖÕÖ¹·û(EndInput)
+		//å¦‚æœè¯»åˆ°æ–‡ä»¶ç»“å°¾ä¾ç„¶æ²¡æœ‰æ‰¾åˆ°ç»ˆæ­¢ç¬¦(EndInput)
 		if (ch == EOF)
 		{
 			break;
@@ -140,237 +141,113 @@ char* FileMoveStr(FILE* _Stream, int EndInput, int DecideEnd)
 
 	TransferStr(str_array, head);
 	//printf("%s", str_array);
-	DeleteAllNodes(&head);//É¾³ıÕû¸öÁ´±í,·ÀÖ¹Õ¼ÄÚ´æ
+	DeleteAllNodes(&head);//åˆ é™¤æ•´ä¸ªé“¾è¡¨,é˜²æ­¢å å†…å­˜
 	return str_array;
 }
 
-//Õâ¸öÊÇ¾Éº¯Êı,ÓĞÎÊÌâ
-
-//long int getFileSize(FILE* fp) 
-//{
-//	long size, cur_pos;
-//
-//	cur_pos = ftell(fp); // »ñÈ¡µ±Ç°ÎÄ¼şÖ¸ÕëËùÔÚÎ»ÖÃ
-//	fseek(fp, 0L, SEEK_END); // ½«ÎÄ¼şÖ¸ÕëÒÆ¶¯µ½ÎÄ¼şÄ©Î²
-//	size = ftell(fp); // »ñÈ¡ÎÄ¼ş´óĞ¡
-//	fseek(fp, cur_pos, SEEK_SET); // »Ö¸´ÎÄ¼şÖ¸ÕëÎ»ÖÃ
-//
-//	return size;
-//}
-//
-//long int searchStr(FILE* stream, const char* input)
-//{
-//	FILE* input_stream = stream;//·½±ã²Ù×÷ÎÄ¼şÖ¸Õë
-//	char* input_str = input;//·½±ã²Ù×÷×Ö·û´®
-//
-//	//¶Ô±ÈÎÄ¼şºÍ×Ö·û´®µÄ´óĞ¡,Èç¹ûÊäÈëµÄ×Ö·û´®´óÓÚÎÄ¼şµÄ´óĞ¡Ôò·µ»Ø0
-//	if (strlen(input_str) > getFileSize(input_stream))
-//	{
-//		return 0;
-//	}
-//
-//	input_str[strlen(input)] = '\0';//¸ø×Ö·û´®Ò»¸ö½áÎ²
-//
-//	long int file_pointer = ftell(input_stream);//¼ÇÂ¼ÎÄ¼şÖ¸Ê¾Æ÷µ±Ç°µÄÎ»ÖÃ
-//
-//	size_t i = 0;//iÓÃÀ´µü´ú
-//
-//	while (1)
-//	{
-//		int end = 0;
-//		char* temp = (char*)malloc(strlen(input_str) + 1);
-//		//´¦ÀíÄÚ´æ·ÖÅäÊ§°ÜµÄ´íÎó
-//		if (temp == NULL)
-//		{
-//			return 0;
-//		}
-//		temp[strlen(input_str)] = '\0';//¸ø×Ö·û´®Ò»¸ö½áÎ²
-//		end = fread(temp, strlen(input_str), 1, input_stream);//´ÓÎÄ¼şÖĞ¶ÁÈ¡Êı¾İ
-//
-//		fseek(input_stream, i, SEEK_SET);
-//
-//		//Èç¹ûËÑË÷µ½ÁË×Ö·û´®
-//		if (strcmp(temp, input_str) == 0)
-//		{
-//			fseek(input_stream, file_pointer, SEEK_SET);
-//			free(temp);
-//			return (i + strlen(temp));
-//		}
-//
-//		//Èç¹ûÒÑ¾­´ïµ½ÎÄ¼şÄ©Î²»¹Ã»ÓĞ¶ÁÈ¡µ½ÏàÓ¦µÄ×Ö·û´®
-//		if (end == 0)
-//		{
-//			fseek(input_stream, file_pointer, SEEK_SET);
-//			free(temp);
-//			return 0;
-//		}
-//
-//		free(temp);
-//
-//		i++;
-//
-//		fseek(input_stream, 0, SEEK_SET);
-//	}
-//	fseek(input_stream, file_pointer, SEEK_SET);
-//}
-
-
-// »ñÈ¡ÎÄ¼ş´óĞ¡µÄº¯Êı
-long int getFileSize(FILE* fp)
+// è·å–æ–‡ä»¶å¤§å°çš„å‡½æ•°,æ”¾å¿ƒ,å‡½æ•°è°ƒç”¨å®Œåä¼šæŠŠæ–‡ä»¶æŒ‡ç¤ºå™¨æ”¾å›åŸä½
+size_t getFileSize(file* fp)
 {
-	long int size = 0;
+	size_t pointer = ftell(fp);
 
-	long int file_pointer = ftell(fp);
+	size_t file_size = 0;
 
-	// ½«ÎÄ¼şÖ¸ÕëÒÆµ½ÎÄ¼şÄ©Î²
-	fseek(fp, 0L, SEEK_END);
+	fseek(fp, 0, SEEK_END);
 
-	// »ñÈ¡ÎÄ¼ş´óĞ¡
-	size = ftell(fp);
+	file_size = ftell(fp);
 
-	// ½«ÎÄ¼şÖ¸ÕëÒÆµ½Ô­À´µÄÎ»ÖÃ
-	fseek(fp, file_pointer, SEEK_SET);
+	fseek(fp, pointer, SEEK_SET);
 
-	return size;
+	return file_size;
+
 }
 
-// ÔÚÎÄ¼şÖĞËÑË÷×Ö·û´®µÄº¯Êı
-long int searchStr(FILE* stream, const char* input, int front_OR_behind, size_t which_str)
+// åœ¨æ–‡ä»¶ä¸­æœç´¢å­—ç¬¦ä¸²çš„å‡½æ•°,è¿”å›å€¼ä¸ºè¯¥å­—ç¬¦ä¸²åˆ°æ–‡ä»¶å¼€å¤´çš„è·ç¦»,æ”¾å¿ƒ,è¿™ä¸ªå‡½æ•°è°ƒç”¨å®Œåä¼šæŠŠæ–‡ä»¶æŒ‡ç¤ºå™¨ç§»åŠ¨åˆ°åŸä½
+size_t searchstr(file* fp, const char* str, int front_OR_behind, size_t which_str)
 {
-	// »ñÈ¡ÎÄ¼şÖ¸ÕëµÄµ±Ç°Î»ÖÃ
-	long int file_pointer = ftell(stream);
-
-	// »ñÈ¡ÎÄ¼ş´óĞ¡
-	long int file_size = getFileSize(stream);
-
-	// Èç¹ûÊäÈë×Ö·û´®µÄ³¤¶È´óÓÚÎÄ¼ş´óĞ¡£¬Ôò·µ»Ø 0
-	if (strlen(input) > file_size)
+	//é”™è¯¯
+	if (which_str < 1)
 	{
-		fseek(stream, file_pointer, SEEK_SET);
+		return 0;
+	}
+	//å¦‚æœè¾“å…¥çš„å­—ç¬¦ä¸²å¤§äºæ–‡ä»¶å¤§å°
+	if (strlen(str) > getFileSize(fp))
+	{
 		return 0;
 	}
 
-	// ½«ÎÄ¼şÖ¸ÕëÒÆµ½ÎÄ¼ş¿ªÍ·
-	fseek(stream, 0L, SEEK_SET);
-
-	// ¶¯Ì¬·ÖÅäÒ»¸ö»º³åÇø£¬²¢½«ÎÄ¼şÖĞµÄÊı¾İ¶ÁÈëµ½»º³åÇøÖĞ
+	//è®°å½•æ–‡ä»¶æŒ‡ç¤ºå™¨åˆšåˆšå¼€å§‹çš„ä½ç½®
+	size_t pointer = ftell(fp);
+	//æ–‡ä»¶æŒ‡ç¤ºå™¨å½’é›¶
+	fseek(fp, 0, SEEK_SET);
+	//è·å–æ–‡ä»¶å¤§å°
+	size_t file_size = getFileSize(fp);
+	//ç”³è¯·ä¸€å—æ–‡ä»¶å¤§å°çš„å†…å­˜åŒºåŸŸ
 	char* buffer = (char*)malloc(file_size + 1);
-
-	// Èç¹û·ÖÅäÄÚ´æÊ§°Ü£¬Ôò·µ»Ø 0
-	if (buffer == NULL) 
+	//ç”³è¯·å†…å­˜å¤±è´¥
+	if (buffer == NULL)
 	{
-		fseek(stream, file_pointer, SEEK_SET);
 		return 0;
 	}
 
-	fread(buffer, file_size, 1, stream);
-
-	// ÔÚ»º³åÇøÖĞÌí¼Ó×Ö·û´®½áÎ²·û
 	buffer[file_size] = '\0';
-
-	// ÔÚ»º³åÇøÖĞËÑË÷ÊäÈë×Ö·û´®
-	char* ptr = strstr(buffer, input);
-
-	// Èç¹ûÃ»ÓĞÕÒµ½ÊäÈë×Ö·û´®£¬Ôò·µ»Ø 0
-	if (ptr == NULL) 
+	char* buffer_free = buffer;
+	//æŠŠæ•°æ®è¯»å…¥ç¼“å†²åŒº
+	fread(buffer, file_size, 1, fp);
+	fseek(fp, pointer, SEEK_SET);//æ–‡ä»¶æŒ‡ç¤ºå™¨å¤ä½
+	//æœç´¢å­—ç¬¦ä¸²
+	for (size_t i = 0; i < which_str; i++)
 	{
-		fseek(stream, file_pointer, SEEK_SET);
-		free(buffer);
-		return 0;
-	}
-
-	// ÕÒµ½ÊäÈë×Ö·û´®ºó£¬¼ÌĞø²éÕÒºóÃæµÄÆ¥Åä×Ö·û´®
-	for (size_t i = 1; i < which_str; i++)
-	{
-		// ¼ÆËãµ±Ç°Æ¥Åä×Ö·û´®µÄÎ»ÖÃ
-		long int position = ptr - buffer;
-
-		// ÒÆ¶¯Ö¸Õëµ½µ±Ç°Æ¥Åä×Ö·û´®µÄ½áÎ²Î»ÖÃ
-		ptr += strlen(input);
-
-		// ¼ÌĞøÔÚÊ£ÓàµÄ»º³åÇøÖĞ²éÕÒÆ¥Åä×Ö·û´®
-		ptr = strstr(ptr, input);
-
-		// Èç¹ûÃ»ÓĞÕÒµ½£¬Ôò·µ»Ø 0
-		if (ptr == NULL) 
+		buffer = strstr(buffer, str);
+		if (buffer == NULL)
 		{
-			fseek(stream, file_pointer, SEEK_SET);
-			free(buffer);
+			//æ²¡æ‰¾åˆ°å­—ç¬¦ä¸²
+			free(buffer_free);
 			return 0;
 		}
+		//ç§»åŠ¨æŒ‡é’ˆç”¨äºç»§ç»­æœç´¢
+		buffer += 1;
 	}
-
-	// ¼ÆËãÊäÈë×Ö·û´®ÔÚÎÄ¼şÖĞµÄÎ»ÖÃ
-	long int position = ptr - buffer;
-
-	// ½«ÎÄ¼şÖ¸ÕëÒÆµ½Ô­À´µÄÎ»ÖÃ
-	fseek(stream, file_pointer, SEEK_SET);
-
-	// ÊÍ·Å»º³åÇøµÄÄÚ´æ
-	free(buffer);
-
-	// ·µ»ØÆ¥ÅäÏîµÄÎ»ÖÃ
+	//-1æ˜¯å› ä¸ºä¸ºäº†æœç´¢,bufferåç§»äº†1ä½
+	buffer -= 1;
 	if (front_OR_behind == INFRONT)
 	{
-		return position + file_pointer;
+		size_t temp = file_size - strlen(buffer);
+		free(buffer_free);
+		return temp;
 	}
 	else if (front_OR_behind == BEHIND)
 	{
-		return position + file_pointer + strlen(input);
+		size_t temp = file_size - strlen(buffer) + strlen(str);
+		free(buffer_free);
+		return temp;
 	}
 	else
 	{
+		free(buffer_free);
 		return 0;
-		//error
 	}
 }
 
-////Õâ¸öº¯ÊıÓÃÀ´Ìæ»»ÎÄ¼şÖĞµÄÖ¸¶¨×Ö·û´®,ÎÊÌâ±È½Ï´ó
-//void replaceStr(file* stream, const char* str1, const char* str2, size_t which_str)
-//{
-//	long int pointer = ftell(stream);//»ñÈ¡ÎÄ¼şÖ¸Õëµ±Ç°µÄÎ»ÖÃ
-//
-//	//»ñÈ¡Òª±»Ìæ»»µÄ×Ö·û´®ºóÃæµÄÎ»ÖÃ
-//	char* file_BehindPointer = searchStr(stream, str1, BEHIND, which_str);
-//
-//	fseek(stream, file_BehindPointer, SEEK_SET);//ÒÆ¶¯µ½Òª±»Ìæ»»µÄ×Ö·û´®ºóÃæµÄÎ»ÖÃ
-//	
-//	//°ÑÒª±»Ìæ»»µÄ×Ö·û´®ºóÃæµÄÊı¾İ¶ÁÈ¡ÁË
-//	char* Behind_data = FileMoveStr(stream, EOF, IncludeTheEnd);
-//
-//	long int file_infrontPointer = searchStr(stream, str1, INFRONT, which_str);//»ñÈ¡Òª±»Ìæ»»µÄ×Ö·û´®Ç°ÃæµÄÎ»ÖÃ
-//
-//	//ÒÆ¶¯µ½±»Ìæ»»µÄ×Ö·û´®Ç°ÃæµÄÎ»ÖÃ
-//	fseek(stream, file_infrontPointer, SEEK_SET);
-//
-//	fwrite(str2, strlen(str2), 1, stream);//Ğ´ÈëÏëÒªµÄ×Ö·û´®
-//
-//	fwrite(Behind_data, strlen(Behind_data), 1, stream);//Ğ´ÈëºóÃæµÄÊı¾İ
-//
-//	fseek(stream, pointer, SEEK_SET);
-//}
-
-
-
-//Õâ¸öº¯ÊıÓÃÀ´Ìæ»»ÎÄ¼şÖĞµÄÖ¸¶¨×Ö·û´®
+//è¿™ä¸ªå‡½æ•°ç”¨æ¥æ›¿æ¢æ–‡ä»¶ä¸­çš„æŒ‡å®šå­—ç¬¦ä¸²
 int replaceStr(file* stream, const char* str1, const char* str2, size_t which_str)
 {
-	fseek(stream, 0, SEEK_SET);//ÎÄ¼şÖ¸Ê¾Æ÷¹é0
-	size_t file_size = (size_t)getFileSize(stream);//»ñÈ¡Òª¶ÁÈ¡µÄÎÄ¼ş´óĞ¡
+	fseek(stream, 0, SEEK_SET);//æ–‡ä»¶æŒ‡ç¤ºå™¨å½’0
+	size_t file_size = getFileSize(stream);//è·å–è¦è¯»å–çš„æ–‡ä»¶å¤§å°
 
-	long int str_place = searchStr(stream, str1, INFRONT, which_str);//»ñÈ¡Òª±»Ìæ»»µÄ×Ö·û´®Î»ÖÃ
-	//Ã»ÕÒµ½×Ö·û´®
+	size_t str_place = searchstr(stream, str1, INFRONT, which_str);//è·å–è¦è¢«æ›¿æ¢çš„å­—ç¬¦ä¸²ä½ç½®
+	//æ²¡æ‰¾åˆ°å­—ç¬¦ä¸²
 	if (str_place == 0)
 	{
 		return ERROR_NO_STR;
 	}
-	fseek(stream, str_place, SEEK_SET);//ÒÆ¶¯µ½Òª±»Ìæ»»µÄ×Ö·û´®Ç°Ãæ
+	fseek(stream, str_place, SEEK_SET);//ç§»åŠ¨åˆ°è¦è¢«æ›¿æ¢çš„å­—ç¬¦ä¸²å‰é¢
 
-	fseek(stream, str_place + strlen(str1), SEEK_SET);//ÒÆ¶¯µ½±»Ìæ»»µÄ×Ö·û´®ºóÃæ
+	fseek(stream, str_place + strlen(str1), SEEK_SET);//ç§»åŠ¨åˆ°è¢«æ›¿æ¢çš„å­—ç¬¦ä¸²åé¢
 
-	char* buffer = FileMoveStr(stream, EOF, NIncludeTheEnd);//¶ÁÈ¡ºóÃæµÄÎÄ¼ş
+	char* buffer = FileMoveStr(stream, EOF, NIncludeTheEnd);//è¯»å–åé¢çš„æ–‡ä»¶
 	
-	fseek(stream, str_place, SEEK_SET);//ÒÆ¶¯µ½±»Ìæ»»µÄ×Ö·û´®Ç°Ãæ
+	fseek(stream, str_place, SEEK_SET);//ç§»åŠ¨åˆ°è¢«æ›¿æ¢çš„å­—ç¬¦ä¸²å‰é¢
 
 	fwrite(str2, strlen(str2), 1, stream);
 
@@ -378,52 +255,53 @@ int replaceStr(file* stream, const char* str1, const char* str2, size_t which_st
 
 	free(buffer);
 
-	fseek(stream, 0, SEEK_SET);//ÎÄ¼şÖ¸Ê¾Æ÷¹é0
+	fseek(stream, 0, SEEK_SET);//æ–‡ä»¶æŒ‡ç¤ºå™¨å½’0
 
 	return SUCCESS;
 }
 
-//¼ÆËãÎÄ¼şÖĞ°üº¬Ö¸¶¨×Ö·û´®µÄ¸öÊı
-//
-//@param stream ÎÄ¼şÖ¸Õë
-//
-//@param str Ö¸¶¨×Ö·û´®
-//
-//@return °üº¬Ö¸¶¨×Ö·û´®µÄ¸öÊı
-
-size_t filestrnum(FILE* stream, const char* str)
+//è¿™æ˜¯ä¸€ä¸ªç”¨äºç»Ÿè®¡æ–‡ä»¶ä¸­æŸä¸ªå­—ç¬¦ä¸²å‡ºç°æ¬¡æ•°çš„å‡½æ•°
+size_t filestrnum(file* fp, const char* str)
 {
-	long int pointer = ftell(stream); // ¼ÇÂ¼ÎÄ¼şÖ¸Ê¾Æ÷µ±Ç°Î»ÖÃ
-	fseek(stream, 0, SEEK_SET); // ÎÄ¼şÖ¸Ê¾Æ÷¹éÎ»
-
-	size_t inspect;
+	//è·å–æ–‡ä»¶æŒ‡ç¤ºå™¨å½“å‰ä½ç½®
+	size_t pointer = ftell(fp);
+	//æ–‡ä»¶æŒ‡ç¤ºå™¨å½’é›¶
+	fseek(fp, 0, SEEK_SET);
+	//è·å–æ–‡ä»¶å¤§å°
+	size_t file_size = getFileSize(fp);
+	//å¦‚æœè¾“å…¥çš„å­—ç¬¦ä¸²å¤§å°å¤§äºæ–‡ä»¶å¤§å°
+	if (strlen(str) > file_size)
+	{
+		return 0;
+	}
+	//ç”³è¯·ç¼“å†²åŒº
+	char*buffer =  malloc(file_size + 1);
+	if (buffer == NULL)
+	{
+		return 0;
+	}
+	buffer[file_size] = '\0';
+	char* buffer_free = buffer;
+	//è¯»å…¥æ•°æ®
+	fread(buffer, file_size, 1, fp);
+	fseek(fp, pointer, SEEK_SET);//æ–‡ä»¶æŒ‡ç¤ºå™¨å¤ä½
+	//ç»Ÿè®¡å­—ç¬¦ä¸²
 	size_t i = 0;
-	size_t strnum = 0;
-	char* buffer = (char*)malloc(strlen(str) + 1); // ·ÖÅä»º³åÇø
-	buffer[strlen(str)] = '\0';
-
 	while (1)
 	{
-		inspect = fread(buffer, strlen(str), 1, stream);
-		if (inspect == 0)
+		buffer = strstr(buffer, str);
+		if (buffer == NULL)
 		{
 			break;
 		}
-
-		// Èç¹ûÕÒµ½ÁËÏàÓ¦µÄ×Ö·û´®
-		if (strcmp(buffer, str) == 0)
-		{
-			strnum++;
-		}
-		fseek(stream, i, SEEK_SET);
 		i++;
+		buffer += 1;
 	}
+	free(buffer_free);
+	return i;
 
-	free(buffer);
-	fseek(stream, pointer, SEEK_SET); // »Ö¸´ÎÄ¼şÖ¸Ê¾Æ÷
-
-	return strnum;
 }
+
 
 
 int replaceAllStr(file* stream, const char* str1, const char* str2)
@@ -431,7 +309,7 @@ int replaceAllStr(file* stream, const char* str1, const char* str2)
 	int inspect = 0;
 	size_t strnum = filestrnum(stream, str1);
 	size_t i = 1;
-	//Ö»Òª»¹ÓĞ×Ö·û´®£¬¾ÍÒ»Ö±Ñ­»·
+	//åªè¦è¿˜æœ‰å­—ç¬¦ä¸²ï¼Œå°±ä¸€ç›´å¾ªç¯
 	while (i <= strnum)
 	{
 		replaceStr(stream, str1, str2, i);
@@ -441,3 +319,129 @@ int replaceAllStr(file* stream, const char* str1, const char* str2)
 	}
 	return SUCCESS;
 }
+
+//æ­¤å‡½æ•°æœç´¢æ–‡ä»¶æŒ‡ç¤ºå™¨åé¢ç›¸åº”çš„å­—ç¬¦ä¸²,å¹¶ä¸”è¿”å›è¯¥å­—ç¬¦ä¸²åˆ°æ–‡ä»¶å¼€å¤´çš„è·ç¦»,æ”¾å¿ƒ,è¿™ä¸ªå‡½æ•°è°ƒç”¨å®Œåæ–‡ä»¶æŒ‡ç¤ºå™¨ä¼šå›å½’åŸä½
+size_t searchBehPoiStr(file* fp, const char* str, int front_OR_behind, size_t which_str)
+{
+	//è·å–æ–‡ä»¶æŒ‡ç¤ºå™¨å½“å‰ä½ç½®
+	size_t pointer = ftell(fp);
+	//è·å–æ–‡ä»¶å¤§å°
+	size_t file_size = getFileSize(fp);
+	//è®¡ç®—æ–‡ä»¶æŒ‡ç¤ºå™¨åé¢çš„æ•°æ®å¤§å°
+	size_t behind_size = file_size - pointer;
+	//ç”³è¯·ä¸€å—å†…å­˜
+	char* behind_buffer = (char*)malloc(behind_size + 1);
+	behind_buffer[behind_size] = '\0';
+	fread(behind_buffer, behind_size, 1, fp);//è¯»å…¥æ•°æ®
+	fseek(fp, pointer, SEEK_SET);//æ–‡ä»¶æŒ‡ç¤ºå™¨å¤ä½
+	char* behind_free = behind_buffer;
+	//æœç´¢å­—ç¬¦ä¸²
+	for (size_t i = 0; i < which_str; i++)
+	{
+		behind_buffer = strstr(behind_buffer, str);
+		if (behind_buffer == NULL)
+		{
+			free(behind_free);
+			return 0;
+		}
+		behind_buffer += 1;
+	}
+	behind_buffer -= 1;
+	
+	if (front_OR_behind == INFRONT)
+	{
+		size_t temp = behind_size - strlen(behind_buffer) + pointer;
+		free(behind_free);
+		return temp;
+	}
+	else if (front_OR_behind == BEHIND)
+	{
+		size_t temp = behind_size - strlen(behind_buffer) + pointer + strlen(str);
+		free(behind_free);
+		return temp;
+	}
+	else
+	{
+		//error
+		return 0;
+	}
+}
+
+//æ­¤å‡½æ•°åŠŸèƒ½æ˜¯æ›¿æ¢ä¸¤æ®µå­—ç¬¦ä¸²ä¹‹é—´çš„å­—ç¬¦ä¸²,ä»¥ç¬¬ä¸€ç»„å­—ç¬¦ä¸²çš„ä½ç½®ä¸ºå‡†,ç¬¬äºŒç»„å­—ç¬¦ä¸²åªå¯ä»¥åœ¨ç¬¬ä¸€ç»„åé¢
+void between_write(file* fp, const char* str1, const char* str2, const char* write_str, size_t which_str)
+{
+	//è·å–æ–‡ä»¶å¤§å°
+	size_t file_size = getFileSize(fp);
+	//è·å–æ–‡ä»¶æŒ‡ç¤ºå™¨ä½ç½®
+	size_t pointer = ftell(fp);
+
+	//æ›¿æ¢å‰
+	char* temp0 = (char*)malloc(file_size + 1);
+	temp0[file_size] = '\0';
+	fread(temp0, file_size, 1, fp);
+	printf("æ›¿æ¢å‰:%s\n", temp0);
+
+
+
+	//æœç´¢ä¸¤ä¸ªå­—ç¬¦ä¸²çš„ä½ç½®,ä»¥ç¬¬ä¸€ç»„å­—ç¬¦ä¸²çš„ä½ç½®ä¸ºå‡†,ç¬¬äºŒç»„å­—ç¬¦ä¸²åªå¯ä»¥åœ¨ç¬¬ä¸€ç»„åé¢
+	size_t str1_position = searchstr(fp, str1, BEHIND, which_str);
+	printf("str1_position(behind) = %zd\n", str1_position);
+	//ç§»åŠ¨æ–‡ä»¶æŒ‡ç¤ºå™¨ä¾¿äºæœç´¢åœ¨str1ä¹‹åçš„str2
+	fseek(fp, str1_position, SEEK_SET);
+	size_t str2_position = searchBehPoiStr(fp, str2, INFRONT, 1);
+	printf("str2_position(front) = %zd\n", str2_position);
+	fseek(fp, pointer, SEEK_SET);//æ–‡ä»¶æŒ‡ç¤ºå™¨å¤ä½
+	//å¦‚æœæ²¡æœ‰æ‰¾åˆ°å­—ç¬¦ä¸²
+	/*if (str1_position == 0 || str2_position == 0)
+	{
+		return 0;
+	}*/
+	//å¦‚æœä¸¤ä¸ªå­—ç¬¦ä¸²é‡å 
+	/*if (str1_position == str2_position)
+	{
+		return 0;
+	}*/
+	fseek(fp, str2_position, SEEK_SET);//æ–‡ä»¶æŒ‡ç¤ºå™¨ç§»åŠ¨åˆ°str2å‰é¢
+	//è¯»å…¥str2åŠå…¶åé¢çš„æ•°æ®
+	size_t behind_str2_size = file_size - str2_position;
+	char* behind_str2 = (char*)malloc(behind_str2_size + 1);
+	behind_str2[behind_str2_size] = '\0';
+	fread(behind_str2, behind_str2_size, 1, fp);
+	//å†™å…¥è¦æ›¿æ¢çš„å­—ç¬¦ä¸²ä»¥åŠstr2åŠå…¶ä¹‹åçš„æ•°æ®
+	fseek(fp, str1_position, SEEK_SET);//æ–‡ä»¶æŒ‡ç¤ºå™¨ç§»åŠ¨åˆ°str1åé¢
+	fwrite(write_str, strlen(write_str), 1, fp);
+	fwrite(behind_str2, strlen(behind_str2), 1, fp);;
+	//å†æ¬¡è·å–å½“å‰æ–‡ä»¶å¤§å°,å¹¶é‡æ–°è¯»å–æ–‡ä»¶æ•°æ®
+	size_t file_size2 = getFileSize(fp);
+	fseek(fp, 0, SEEK_SET);//æ–‡ä»¶æŒ‡ç¤ºå™¨å†æ¬¡ç§»åŠ¨åˆ°å¼€å¤´ä¾¿äºè¯»å–æ•°æ®
+	char* temp1 = (char*)malloc(file_size2 + 1);
+	temp1[file_size] = '\0';
+	fread(temp1, file_size, 1, fp);
+	printf("æ›¿æ¢å:%s\n", temp1);
+	//return 0;
+}
+
+
+/*
+ *                    _ooOoo_
+ *                   o8888888o
+ *                   88" . "88
+ *                   (| -_- |)
+ *                    O\ = /O
+ *                ____/`---'\____
+ *              .   ' \\| |// `.
+ *               / \\||| : |||// \
+ *             / _||||| -:- |||||- \
+ *               | | \\\ - /// | |
+ *             | \_| ''\---/'' | |
+ *              \ .-\__ `-` ___/-. /
+ *           ___`. .' /--.--\ `. . __
+ *        ."" '< `.___\_<|>_/___.' >'"".
+ *       | | : `- \`.;`\ _ /`;.`/ - ` : | |
+ *         \ \ `-. \_ __\ /__ _/ .-` / /
+ * ======`-.____`-.___\_____/___.-`____.-'======
+ *                    `=---='
+ *
+ * .............................................
+ *          ä½›ç¥–ä¿ä½‘             æ°¸æ— BUG
+ */
